@@ -1,9 +1,9 @@
 let inpName=document.getElementById('name')
-let inpValue=document.getElementById('value')
+let inpEmail=document.getElementById('value')
 let submitButton=document.getElementById('forms')
 
 window.addEventListener("DOMContentLoaded", () =>{
-    axios.get("https://crudcrud.com/api/12a4e6eb6ae74c8c81c135c1bec54025/objects")
+    axios.get("https://crudcrud.com/api/5230a46a84dc4aeeafacc682b2575f39/objects")
     .then((responses) =>
     {
         for(var i=0;i<responses.data.length;i++)
@@ -18,8 +18,8 @@ submitButton.addEventListener('submit', submitNodes)
 function submitNodes(e)
 {
     e.preventDefault();
-    let obj = {name: inpName.value, value: inpValue.value}
-    axios.post("https://crudcrud.com/api/12a4e6eb6ae74c8c81c135c1bec54025/objects", obj)
+    let obj = {name: inpName.value, value: inpEmail.value}
+    axios.post("https://crudcrud.com/api/5230a46a84dc4aeeafacc682b2575f39/objects", obj)
     .then((response) => {
         addDataInto(response.data)})
     .catch((err) => console.log(err))
@@ -34,12 +34,12 @@ function addDataInto(obj)
                 <button onClick=editVal('${obj._id}')>Edit</button></li>`;
     li_items.innerHTML += lists;
     inpName.value = ""
-    inpValue.value = ""
+    inpEmail.value = ""
 }
 
 function deleteVal(id)
 {
-    axios.delete(`https://crudcrud.com/api/12a4e6eb6ae74c8c81c135c1bec54025/objects/${id}`)
+    axios.delete(`https://crudcrud.com/api/5230a46a84dc4aeeafacc682b2575f39/objects/${id}`)
     .then((response) =>
     {
         removeUser(id)
@@ -48,10 +48,22 @@ function deleteVal(id)
 }
 function editVal(id)
 {
-    axios.delete(`https://crudcrud.com/api/12a4e6eb6ae74c8c81c135c1bec54025/objects/${id}`)
+    axios.get(`https://crudcrud.com/api/5230a46a84dc4aeeafacc682b2575f39/objects/${id}`)
     .then((response) =>
     {
+        inpName.value = response.data.name
+        inpEmail.value = response.data.value
         removeUser(id)
+        let submitButton2 = document.getElementById('sub')
+        submitButton2.addEventListener('click', submitNodesEdit)
+        function submitNodesEdit(e){
+            e.preventDefault();
+            let obj = {name: inpName.value, value: inpEmail.value}
+            axios.put(`https://crudcrud.com/api/5230a46a84dc4aeeafacc682b2575f39/objects/${id}`, obj)
+            .then((response) => {
+                addDataInto(obj)})
+            .catch((err) => console.log(err))
+        }
     }).catch((err) => console.log(err))
 }
 
